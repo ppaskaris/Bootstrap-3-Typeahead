@@ -203,6 +203,12 @@ Options can be passed via data attributes or JavaScript. For data attributes, ap
                 <td>false</td>
                 <td>Adds an item to the end of the list, for example "New Entry". This could be used, for example, to pop a dialog when an item is not found in the list of data. Example: <a href="http://cl.ly/image/2u170I1q1G3A/addItem.png">http://cl.ly/image/2u170I1q1G3A/addItem.png</a></td>
               </tr>
+              <tr>
+                <td>skipHeadersAndDividers</td>
+                <td>boolean</td>
+                <td>false</td>
+                <td>When true, menu headers and dividers are skipped over when using keyboard navigation to select items.</td>
+              </tr>
               </tbody>
             </table>
 

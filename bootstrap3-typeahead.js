@@ -59,6 +59,7 @@
     this.displayText = this.options.displayText || this.displayText;
     this.source = this.options.source;
     this.delay = this.options.delay;
+    this.skipHeadersAndDividers = this.options.skipHeadersAndDividers;
     this.$menu = $(this.options.menu);
     this.$appendTo = this.options.appendTo ? $(this.options.appendTo) : null;
     this.fitToElement = typeof this.options.fitToElement == 'boolean' ? this.options.fitToElement : false;
@@ -68,6 +69,7 @@
     this.afterSelect = this.options.afterSelect;
     this.addItem = false;
     this.value = this.$element.val() || this.$element.text();
+    this.itemSelector = this.skipHeadersAndDividers ? 'li:not(.divider):not(.dropdown-header)' : 'li';
   };
 
   Typeahead.prototype = {
@@ -302,8 +304,8 @@
       });
 
       if (this.autoSelect && !activeFound) {
-        items.filter(':not(.dropdown-header)').first().addClass('active');
-        this.$element.data('active', items.first().data('value'));
+        var autoItem = items.filter(this.itemSelector).first().addClass('active');
+        this.$element.data('active', autoItem.data('value'));
       }
       this.$menu.html(items);
       return this;
@@ -315,10 +317,10 @@
 
     next: function (event) {
       var active = this.$menu.find('.active').removeClass('active');
-      var next = active.next();
+      var next = active.nextAll(this.itemSelector).first();
 
       if (!next.length) {
-        next = $(this.$menu.find('li')[0]);
+        next = this.$menu.find(this.itemSelector).first();
       }
 
       next.addClass('active');
@@ -326,10 +328,10 @@
 
     prev: function (event) {
       var active = this.$menu.find('.active').removeClass('active');
-      var prev = active.prev();
+      var prev = active.prevAll(this.itemSelector).first();
 
       if (!prev.length) {
-        prev = this.$menu.find('li').last();
+        prev = this.$menu.find(this.itemSelector).last();
       }
 
       prev.addClass('active');
@@ -498,7 +500,10 @@
     mouseenter: function (e) {
       this.mousedover = true;
       this.$menu.find('.active').removeClass('active');
-      $(e.currentTarget).addClass('active');
+      var $item = $(e.currentTarget);
+      if ($item.is(this.itemSelector)) {
+        $item.addClass('active');
+      }
     },
 
     mouseleave: function (e) {
@@ -558,7 +563,8 @@
     delay: 0,
     separator: 'category',
     headerHtml: '<li class="dropdown-header"></li>',
-    headerDivider: '<li class="divider" role="separator"></li>'
+    headerDivider: '<li class="divider" role="separator"></li>',
+    skipHeadersAndDividers: false
   };
 
   $.fn.typeahead.Constructor = Typeahead;
